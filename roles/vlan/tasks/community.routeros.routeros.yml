@@ -1,0 +1,6 @@
+---
+- name: VLAN на MikroTik пока не реализован
+  ansible.builtin.fail:
+    msg: >-
+      Для MikroTik нужна коллекция community.routeros и tasks в этом файле.
+      Сейчас в inventory только подключение; команды VLAN добавим отдельно.

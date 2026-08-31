@@ -1,0 +1,9 @@
+# Job file: which hosts + which VLANs.
+# Hosts must exist in inventory.ini (connection/OS live there, not here).
+target_hosts:
+  - leaf413
+  - leaf414
+
+vlans:
+  - vlan_id: 101
+    name: ansible-test

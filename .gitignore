@@ -1,0 +1,18 @@
+.env
+
+
+# Ansible
+*.retry
+ansible.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE и ОС
+.idea/
+.vscode/
+.DS_Store
+*.swp

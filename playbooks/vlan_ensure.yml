@@ -1,0 +1,14 @@
+---
+# Device list: vars/vlan_ensure.yml → target_hosts.
+# Connection/OS: inventory.ini (host must exist there).
+- name: Обеспечить VLAN на устройствах из задания
+  hosts: arista_eos:cisco_ios
+  gather_facts: false
+  vars_files:
+    - ../vars/vlan_ensure.yml
+  pre_tasks:
+    - name: Пропустить хост, которого нет в target_hosts
+      ansible.builtin.meta: end_host
+      when: inventory_hostname not in target_hosts
+  roles:
+    - vlan

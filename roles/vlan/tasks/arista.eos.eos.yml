@@ -1,0 +1,5 @@
+---
+- name: Создать или обновить VLAN (Arista EOS)
+  arista.eos.eos_vlans:
+    config: "{{ vlans }}"
+    state: merged

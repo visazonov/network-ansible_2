@@ -1,0 +1,4 @@
+# Credentials come from Compose env_file (.env), not from inventory.
+ansible_user: "{{ lookup('env', 'ANSIBLE_USER') }}"
+ansible_password: "{{ lookup('env', 'ANSIBLE_PASSWORD') }}"
+ansible_become_password: "{{ lookup('env', 'ANSIBLE_BECOME_PASSWORD') | default(omit, true) }}"
