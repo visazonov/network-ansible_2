@@ -1,0 +1,13 @@
+---
+# GitLab backup → replace running-config. Connection/OS: inventory.ini.
+- name: Восстановить конфиг из GitLab backup_for_eve
+  hosts: arista_eos:cisco_ios
+  gather_facts: false
+  vars_files:
+    - ../vars/config_restore.yml
+  pre_tasks:
+    - name: Пропустить хост, которого нет в target_hosts
+      ansible.builtin.meta: end_host
+      when: inventory_hostname not in target_hosts
+  roles:
+    - config_restore

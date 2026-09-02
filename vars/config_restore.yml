@@ -1,0 +1,11 @@
+# Restore job: GitLab backups → device.
+# Host must exist in inventory.ini.
+target_hosts:
+  - leaf412
+
+# Git clone URL of the device backup project (not the REST files API).
+gitlab_backup_repo: https://gitlab.hybrid.ai/network/backup_for_eve.git
+gitlab_backup_ref: master
+
+# File in the repo root.
+backup_relpath: US/leaf412/running-config.cfg

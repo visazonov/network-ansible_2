@@ -1,0 +1,4 @@
+---
+- name: Restore для этой ОС ещё не сделан
+  ansible.builtin.fail:
+    msg: "Нет tasks/{{ ansible_network_os }}.yml для полного replace конфига"

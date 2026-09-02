@@ -1,5 +1,9 @@
 .env
 
+# Local copies of running-config before restore
+files/pre_restore/
+*.from-gitlab.cfg
+
 
 # Ansible
 *.retry

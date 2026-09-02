@@ -1,8 +1,9 @@
 # Job file: which hosts + which VLANs.
 # Hosts must exist in inventory.ini (connection/OS live there, not here).
 target_hosts:
+  - leaf412
   - leaf413
-  - leaf414
+  # - leaf414
 
 vlans:
   - vlan_id: 101

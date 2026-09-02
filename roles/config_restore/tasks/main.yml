@@ -1,0 +1,35 @@
+---
+- name: Проверить токен GitLab
+  ansible.builtin.assert:
+    that:
+      - lookup('env', 'GITLAB_BACKUP_TOKEN') | length > 0
+    fail_msg: "Задайте GITLAB_BACKUP_TOKEN в .env"
+
+# Fine-grained PAT Code/Read works over Git, not /repository/files/raw (that returns 403).
+- name: Клонировать репозиторий бекапа с GitLab
+  ansible.builtin.git:
+    repo: "https://oauth2:{{ lookup('env', 'GITLAB_BACKUP_TOKEN') }}@{{ gitlab_backup_repo | regex_replace('^https://', '') }}"
+    dest: "/tmp/gitlab-backup-{{ inventory_hostname }}"
+    version: "{{ gitlab_backup_ref }}"
+    depth: 1
+    force: true
+    update: true
+  delegate_to: localhost
+  become: false
+  no_log: true
+
+- name: Проверить, что файл бекапа есть в клоне
+  ansible.builtin.stat:
+    path: "/tmp/gitlab-backup-{{ inventory_hostname }}/{{ backup_relpath }}"
+  register: backup_stat
+  delegate_to: localhost
+  become: false
+
+- name: Файл бекапа должен существовать
+  ansible.builtin.assert:
+    that:
+      - backup_stat.stat.exists
+    fail_msg: "В клоне нет {{ backup_relpath }}"
+
+- name: Выполнить restore для {{ ansible_network_os }}
+  ansible.builtin.include_tasks: "{{ ansible_network_os }}.yml"

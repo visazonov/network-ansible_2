@@ -1,0 +1,17 @@
+---
+- name: Сохранить текущий running-config до замены
+  arista.eos.eos_config:
+    backup: true
+    backup_options:
+      dir_path: /ansible/files/pre_restore
+      filename: "{{ inventory_hostname }}.pre-restore.cfg"
+
+- name: Заменить running-config файлом из GitLab
+  arista.eos.eos_config:
+    src: "/tmp/gitlab-backup-{{ inventory_hostname }}/{{ backup_relpath }}"
+    replace: config
+  vars:
+    ansible_command_timeout: 60
+    ansible_persistent_command_timeout: 60
+    ansible_connect_timeout: 90
+    ansible_persistent_connect_timeout: 90
