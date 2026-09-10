@@ -1,10 +1,38 @@
 # Job file: which hosts + which VLANs.
 # Hosts must exist in inventory.ini (connection/OS live there, not here).
 target_hosts:
-  - leaf412
-  - leaf413
+  - Sw503
+  # - Sw504
+  # - leaf412
+  # - leaf413
   # - leaf414
+  # - leaf_412_prod
+  - lab-vmx
 
+# EOS uses vlan_id + name. Junos also uses irb_address per VLAN.
+# vlan_interfaces / l3_instance / l2_instance apply to every VLAN on Junos.
 vlans:
-  - vlan_id: 101
-    name: ansible-test
+  - vlan_id: 20
+    name: ansible-test-20
+    irb_address: 10.83.0.101/24
+  # - vlan_id: 21
+  #   name: ansible-test-21
+  #   irb_address: 10.83.4.101/24
+  # - vlan_id: 22
+  #   name: ansible-test-22
+  #   irb_address: 10.83.8.101/24
+  # - vlan_id: 23
+  #   name: ansible-test-23
+  #   irb_address: 10.83.12.101/24
+  # - vlan_id: 24
+  #   name: ansible-test-24
+  #   irb_address: 10.83.16.101/24
+  # - vlan_id: 25
+  #   name: ansible-test-25
+  #   irb_address: 10.83.20.101/24
+
+vlan_interfaces:
+  - ge-0/0/2
+  - ae0
+l3_instance: lan
+l2_instance: lan-l2

@@ -1,5 +1,10 @@
 ---
+- name: Собрать только vlan_id и name для EOS
+  ansible.builtin.set_fact:
+    eos_vlans_config: "{{ (eos_vlans_config | default([])) + [{'vlan_id': item.vlan_id | int, 'name': item.name}] }}"
+  loop: "{{ vlans }}"
+
 - name: Создать или обновить VLAN (Arista EOS)
   arista.eos.eos_vlans:
-    config: "{{ vlans }}"
+    config: "{{ eos_vlans_config }}"
     state: merged

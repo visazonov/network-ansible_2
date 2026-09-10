@@ -1,0 +1,24 @@
+---
+- name: Проверить переменные Junos VLAN
+  ansible.builtin.assert:
+    that:
+      - vlans | length > 0
+      - vlan_interfaces | length > 0
+      - l3_instance | length > 0
+      - l2_instance | length > 0
+      - vlans | selectattr('irb_address', 'defined') | list | length == vlans | length
+      - vlans | rejectattr('irb_address', 'eq', '') | list | length == vlans | length
+    fail_msg: "Для Junos в каждом vlans[] нужен irb_address; заполните vlan_interfaces, l3_instance, l2_instance"
+
+- name: Сформировать set-команды VLAN для Junos
+  ansible.builtin.set_fact:
+    junos_vlan_set_lines: "{{ lookup('template', 'junos_add_vlan.set.j2').splitlines() | reject('equalto', '') | list }}"
+
+- name: Настроить IRB, unit и bridge-domain на Junos
+  junipernetworks.junos.junos_config:
+    lines: "{{ junos_vlan_set_lines }}"
+    comment: "ansible vlan_ensure"
+    confirm: 15
+  vars:
+    ansible_command_timeout: 60
+    ansible_persistent_command_timeout: 60

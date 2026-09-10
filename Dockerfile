@@ -15,5 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt \
     && ansible-galaxy collection install \
         cisco.ios \
         arista.eos \
+        junipernetworks.junos \
         ansible.netcommon \
         --collections-path "${ANSIBLE_COLLECTIONS_PATH}"

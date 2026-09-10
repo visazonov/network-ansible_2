@@ -1,0 +1,13 @@
+{% for vlan in vlans %}
+set interfaces irb unit {{ vlan.vlan_id }} family inet address {{ vlan.irb_address }}
+{% for iface in vlan_interfaces %}
+set interfaces {{ iface }} unit {{ vlan.vlan_id }} encapsulation vlan-bridge
+set interfaces {{ iface }} unit {{ vlan.vlan_id }} vlan-id {{ vlan.vlan_id }}
+{% endfor %}
+set routing-instances {{ l3_instance }} interface irb.{{ vlan.vlan_id }}
+set routing-instances {{ l2_instance }} bridge-domains vlan{{ vlan.vlan_id }} vlan-id {{ vlan.vlan_id }}
+{% for iface in vlan_interfaces %}
+set routing-instances {{ l2_instance }} bridge-domains vlan{{ vlan.vlan_id }} interface {{ iface }}.{{ vlan.vlan_id }}
+{% endfor %}
+set routing-instances {{ l2_instance }} bridge-domains vlan{{ vlan.vlan_id }} routing-interface irb.{{ vlan.vlan_id }}
+{% endfor %}

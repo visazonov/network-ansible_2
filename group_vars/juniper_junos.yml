@@ -1,0 +1,3 @@
+# Override group_vars/all.yml for Junos hosts only.
+ansible_user: "{{ lookup('env', 'JUNOS_USER') | default(lookup('env', 'ANSIBLE_USER'), true) }}"
+ansible_password: "{{ lookup('env', 'JUNOS_PASSWORD') | default(lookup('env', 'ANSIBLE_PASSWORD'), true) }}"

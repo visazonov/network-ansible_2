@@ -1,2 +1,5 @@
 vlans: []
 target_hosts: []
+vlan_interfaces: []
+l3_instance: lan
+l2_instance: lan-l2

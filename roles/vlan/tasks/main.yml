@@ -4,6 +4,7 @@
     that:
       - vlans | length > 0
     fail_msg: "Заполните vlans в vars/vlan_ensure.yml"
+  when: ansible_network_os == 'arista.eos.eos'
 
 - name: Выполнить задачи VLAN для {{ ansible_network_os }}
   ansible.builtin.include_tasks: "{{ ansible_network_os }}.yml"

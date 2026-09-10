@@ -2,7 +2,7 @@
 # Device list: vars/vlan_ensure.yml → target_hosts.
 # Connection/OS: inventory.ini (host must exist there).
 - name: Обеспечить VLAN на устройствах из задания
-  hosts: arista_eos:cisco_ios
+  hosts: arista_eos:cisco_ios:juniper_junos
   gather_facts: false
   vars_files:
     - ../vars/vlan_ensure.yml
