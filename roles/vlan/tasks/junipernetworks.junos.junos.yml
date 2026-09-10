@@ -10,6 +10,14 @@
       - vlans | rejectattr('irb_address', 'eq', '') | list | length == vlans | length
     fail_msg: "Для Junos в каждом vlans[] нужен irb_address; заполните vlan_interfaces, l3_instance, l2_instance"
 
+- name: Проверить network, если заданы prefix_lists
+  ansible.builtin.assert:
+    that:
+      - item.network | default('') | length > 0
+    fail_msg: "vlans vlan_id={{ item.vlan_id }}: для prefix_lists нужен network"
+  loop: "{{ vlans }}"
+  when: item.prefix_lists | default([]) | length > 0
+
 - name: Сформировать set-команды VLAN для Junos
   ansible.builtin.set_fact:
     junos_vlan_set_lines: "{{ lookup('template', 'junos_add_vlan.set.j2').splitlines() | reject('equalto', '') | list }}"
@@ -18,7 +26,7 @@
   junipernetworks.junos.junos_config:
     lines: "{{ junos_vlan_set_lines }}"
     comment: "ansible vlan_ensure"
-    confirm: 15
+    confirm: 10
   vars:
     ansible_command_timeout: 60
     ansible_persistent_command_timeout: 60

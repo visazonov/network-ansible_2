@@ -10,4 +10,7 @@ set routing-instances {{ l2_instance }} bridge-domains vlan{{ vlan.vlan_id }} vl
 set routing-instances {{ l2_instance }} bridge-domains vlan{{ vlan.vlan_id }} interface {{ iface }}.{{ vlan.vlan_id }}
 {% endfor %}
 set routing-instances {{ l2_instance }} bridge-domains vlan{{ vlan.vlan_id }} routing-interface irb.{{ vlan.vlan_id }}
+{% for pl in vlan.prefix_lists | default([]) %}
+set policy-options prefix-list {{ pl }} {{ vlan.network }}
+{% endfor %}
 {% endfor %}
