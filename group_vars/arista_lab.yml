@@ -1,0 +1,4 @@
+# Lab EOS (EVE). Env: ANSIBLE_USER_LAB / ANSIBLE_PASSWORD_LAB.
+ansible_user: "{{ lookup('env', 'ANSIBLE_USER_LAB') }}"
+ansible_password: "{{ lookup('env', 'ANSIBLE_PASSWORD_LAB') }}"
+ansible_become_password: "{{ lookup('env', 'ANSIBLE_BECOME_PASSWORD_LAB') | default(omit, true) }}"

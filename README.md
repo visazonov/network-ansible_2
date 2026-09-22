@@ -10,7 +10,7 @@
 
 Открыть папку: File → Open Folder… → вставить путь выше. Файлы править и сохранять там же.
 
-Секреты: скопировать `.env.example` → `.env`. Arista/EOS: `ANSIBLE_USER`, `ANSIBLE_PASSWORD`, при необходимости `ANSIBLE_BECOME_PASSWORD`. Junos (NETCONF): `JUNOS_USER`, `JUNOS_PASSWORD` (если пусто — берутся `ANSIBLE_*`). Прод MX `router501`: `JUNOS_ROUTER501_USER`, `JUNOS_ROUTER501_PASSWORD` (`host_vars/router501.yml`). Restore из GitLab: `GITLAB_BACKUP_TOKEN` (чтение репозитория). Файл `.env` в git не класть.
+Секреты: скопировать `.env.example` → `.env`. Лаба Arista (`arista_lab`): `ANSIBLE_USER_LAB`, `ANSIBLE_PASSWORD_LAB`, при необходимости `ANSIBLE_BECOME_PASSWORD_LAB`. Лаба Junos (`juniper_lab`): `JUNOS_USER`, `JUNOS_PASSWORD` (если пусто — `ANSIBLE_*_LAB`). Прод Arista и Junos (`arista_prod`, `juniper_prod`): одна LDAP-пара `ANSIBLE_USER`, `ANSIBLE_PASSWORD`. Restore из GitLab: `GITLAB_BACKUP_TOKEN`. Файл `.env` в git не класть.
 
 Хосты и способ подключения — `inventory.ini`. Имя в `target_hosts` должно совпадать с именем в inventory.
 
@@ -50,7 +50,7 @@ docker compose run --rm ansible playbooks/config_restore.yml
 **Как работает:** читает `vars/vlan_ensure.yml`. Плей идёт по группам `arista_eos`, `cisco_ios`, `juniper_junos`. Хост не из `target_hosts` — `end_host`. Дальше роль `vlan`: по `ansible_network_os` подключается свой tasks-файл.
 
 - EOS: из каждого элемента `vlans` на свитч уходят только `vlan_id` и `name` (`eos_vlans`, `state: merged`). Поля `irb_address` / `network` / `prefix_lists` EOS не видит.
-- Junos: шаблон `roles/vlan/templates/junos_add_vlan.set.j2` строит `set`-команды для всех `vlans`, один `junos_config` (NETCONF :830), `commit confirmed` (минуты заданы в роли). Повтор с тем же YAML идемпотентен, если конфиг уже совпадает. Пустой `prefix_lists: []` — только L2/L3, без policy-options. Непустой список — для каждой VLAN нужен `network`. Имена prefix-list задаются в YAML, шаблон не хардкодит `NAT` / `lan-msk-export`.
+- Junos: шаблон `roles/vlan/templates/junos_add_vlan.set.j2` строит `set`-команды для всех `vlans`, один `junos_config` (NETCONF :830), `commit confirmed` (минуты заданы в роли). Пустой `prefix_lists: []` — только L2/L3, без policy-options. Непустой список — для каждой VLAN нужен `network`. Имена prefix-list задаются в YAML, шаблон не хардкодит `NAT` / `lan-msk-export`.
 
 На EOS и Junos в одном запуске — два независимых канала (SSH CLI и NETCONF). Общего commit нет: один вендор может пройти, второй упасть.
 
@@ -67,6 +67,8 @@ docker compose run --rm ansible playbooks/vlan_ensure.yml
 ```
 
 Junos: routing-instance `lan` и `lan-l2` на ящике уже должны быть. `confirm` на MX нужно подтвердить обычным `commit` до истечения таймера, иначе откат.
+
+**Предупреждение:** не гонять `vlan_ensure` несколько раз подряд по Junos. Первый прогон делает `commit confirmed`: конфиг активен, но без подтверждающего `commit` на ящике через N минут **откатывается** (`via other` в `show system commit`). Повторный прогон playbook **пока таймер ещё тикает** Junos считает подтверждением pending commit (в том числе при `changed=0`) — откат уже не случится. Сначала дождаться окна или явно `commit` / `rollback` на MX, потом снова Ansible.
 
 ### `playbooks/config_restore.yml`
 

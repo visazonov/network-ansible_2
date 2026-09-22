@@ -8,8 +8,8 @@ target_hosts:
   # - leaf414
   # - leaf_412_prod
   - lab-vmx
-  - router501
-  # - switch517
+  # - router501
+  - switch517
 
 # EOS: vlan_id + name. Junos: irb_address; prefix_lists + network for policy-options.
 # Empty prefix_lists = L2/L3 only (no NAT/BGP prefix-list).

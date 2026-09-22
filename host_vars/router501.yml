@@ -1,3 +1,0 @@
-# Prod MX NETCONF. Overrides group_vars/juniper_junos.yml for this host only.
-ansible_user: "{{ lookup('env', 'JUNOS_ROUTER501_USER') }}"
-ansible_password: "{{ lookup('env', 'JUNOS_ROUTER501_PASSWORD') }}"

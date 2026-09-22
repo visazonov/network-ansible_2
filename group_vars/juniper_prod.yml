@@ -1,0 +1,3 @@
+# Prod MX NETCONF. Same LDAP account as arista_prod.
+ansible_user: "{{ lookup('env', 'ANSIBLE_USER') }}"
+ansible_password: "{{ lookup('env', 'ANSIBLE_PASSWORD') }}"
