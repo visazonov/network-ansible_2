@@ -8,25 +8,38 @@ target_hosts:
   # - leaf414
   # - leaf_412_prod
   - lab-vmx
+  - router501
+  # - switch517
 
 # EOS: vlan_id + name. Junos: irb_address; prefix_lists + network for policy-options.
 # Empty prefix_lists = L2/L3 only (no NAT/BGP prefix-list).
 vlans:
-  - vlan_id: 20
-    name: ansible-test-20
-    irb_address: 10.83.0.101/24
-    network: 10.83.0.0/24
+  - vlan_id: 300
+    name: ansible-test-300
+    irb_address: 10.249.0.1/24
+    network: 10.249.0.0/24
     prefix_lists:
       - lan-msk-export
-      - NAT
-  # - vlan_id: 21
-  #   name: ansible-test-21
-  #   irb_address: 10.83.4.101/24
-  #   network: 10.83.4.0/24
-  #   prefix_lists: []
+  - vlan_id: 301
+    name: ansible-test-301
+    irb_address: 10.249.1.1/24
+    network: 10.249.1.0/24
+    prefix_lists: []
+  # - vlan_id: 20
+  #   name: ansible-test-20
+  #   irb_address: 10.83.0.101/24
+  #   network: 10.83.0.0/24
+  #   prefix_lists:
+  #     - lan-msk-export
+  #     - NAT
+
+# First list item is per-host access IFD; remaining items (ae0) are shared.
+vlan_access_if_by_host:
+  lab-vmx: ge-0/0/2
+  router501: xe-3/0/5
 
 vlan_interfaces:
-  - ge-0/0/2
+  - "{{ vlan_access_if_by_host[inventory_hostname] | default('') }}"
   - ae0
 l3_instance: lan
 l2_instance: lan-l2

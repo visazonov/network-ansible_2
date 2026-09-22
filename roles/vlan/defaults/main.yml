@@ -1,5 +1,6 @@
 vlans: []
 target_hosts: []
+vlan_access_if_by_host: {}
 vlan_interfaces: []
 l3_instance: lan
 l2_instance: lan-l2

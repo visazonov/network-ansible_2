@@ -6,9 +6,12 @@
       - vlan_interfaces | length > 0
       - l3_instance | length > 0
       - l2_instance | length > 0
+      - inventory_hostname in vlan_access_if_by_host
+      - vlan_access_if_by_host[inventory_hostname] | length > 0
       - vlans | selectattr('irb_address', 'defined') | list | length == vlans | length
       - vlans | rejectattr('irb_address', 'eq', '') | list | length == vlans | length
-    fail_msg: "Для Junos в каждом vlans[] нужен irb_address; заполните vlan_interfaces, l3_instance, l2_instance"
+    fail_msg: "Для Junos: irb_address в каждом vlans[]; vlan_interfaces, l3_instance, l2_instance; ключ {{ inventory_hostname }} в vlan_access_if_by_host"
+  
 
 - name: Проверить network, если заданы prefix_lists
   ansible.builtin.assert:
@@ -26,7 +29,7 @@
   junipernetworks.junos.junos_config:
     lines: "{{ junos_vlan_set_lines }}"
     comment: "ansible vlan_ensure"
-    confirm: 10
+    confirm: 5
   vars:
     ansible_command_timeout: 60
     ansible_persistent_command_timeout: 60
